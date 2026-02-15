@@ -1,14 +1,14 @@
-import { Injectable, ConflictException } from '@nestjs/common'; //Injectable() allows this service to be injected into controllers. Without it, Nest cannot manage it.
+import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common'; //Injectable() allows this service to be injected into controllers. Without it, Nest cannot manage it.
 import { RegisterDto } from './dto/register.dto';
-// import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt'; // password hashing and salting
-// import { v4 as uuidv4 } from 'uuid'; // for uuid generation
 import { PrismaService } from '../../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable() //Registers this class with NestJS DI container. (Nest can inject this into other classes (like controllers).)
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService, private jwtService: JwtService) { }
   async register(dto: RegisterDto) {
     try {
       const hashedPassword = await bcrypt.hash(dto.password, 10);  // 10 is the salt rounds, which determines how secure the hash is (and how long it takes to compute)
@@ -39,6 +39,65 @@ export class AuthService {
       ) {
         throw new ConflictException({
           error: 'User already exists',
+        });
+      }
+
+      throw error;
+    }
+  }
+
+  async login(dto: LoginDto) {
+    try {
+      const user = await this.prisma.user.findUnique({ where: { email: dto.email } }) // check if user exists with the given email
+
+      if (!user) {
+        throw new UnauthorizedException({
+          error: 'Invalid Credentials',
+        });
+      }
+
+      const isPasswordValid = await bcrypt.compare(dto.password, user.password);
+
+      if (!isPasswordValid) {
+        throw new UnauthorizedException({
+          error: 'Invalid Credentials',
+        });
+      }
+      const payload = {
+        sub: user.id, // sub is standard JWT field (subject), Always use sub for user id (industry standard)
+        email: user.email,
+        role: user.role,
+      };
+      const accessToken = await this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_SECRET,
+        expiresIn: '15m',
+      });
+      const refreshToken = await this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: '7d',
+      });
+
+
+      return {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        user:
+        {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          status: user.status,
+          createdAt: user.createdAt,
+        }
+      };
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P1000' // Authentication failed against database server (incorrect email or password)
+      ) {
+        throw new UnauthorizedException({
+          error: 'Invalid Credentials',
         });
       }
 

@@ -1,10 +1,10 @@
-FROM node:20-alpine AS base 
+FROM node:20-slim AS base 
 WORKDIR /app                                        
 #  base is a cachable layer,A reusable template image with Node installed and working directory set.
 FROM base AS deps                                   
 # again starts from base, now this layer is deps
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 FROM base AS build                                  
 # again starts from base, now this layer is build
 COPY --from=deps /app/node_modules ./node_modules
