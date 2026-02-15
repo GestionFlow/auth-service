@@ -86,7 +86,7 @@ Each instance operates on its **own dedicated database**.
 ## 🛠️ Tech Stack
 
 - **Runtime:** Node.js
-- **Framework:** Express
+- **Framework:** Nest
 - **Database:** PostgreSQL
 - **ORM:** Prisma
 - **Authentication:** JWT
@@ -113,28 +113,38 @@ This service is considered complete for Phase 1 when:
 
 ---
 
-## 🧱 Repository Structure
+## 📁 Repository Structure
 
-The Auth Service follows a **lean, feature-based repository structure** designed to support incremental development during Phase 1 (MVP), while remaining scalable for future phases.
-
-This structure clearly separates responsibilities, avoids premature abstraction, and keeps authentication logic centralized.
-
-```text
 auth-service/
-├── src/
-│   ├── app.js
-│   ├── server.js
-│   ├── config/
-│   ├── modules/
-│   │   ├── auth/
-│   │   └── users/
-│   ├── middlewares/
-│   ├── utils/
-│   └── routes.js
+│
 ├── prisma/
-├── tests/
-├── Dockerfile
-├── .env.example
+│   ├── schema.prisma          # Prisma schema (DB models, enums)
+│   └── migrations/            # Versioned database migrations
+│
+├── src/
+│   ├── main.ts                # Application bootstrap
+│   ├── app.module.ts          # Root module
+│
+│   ├── prisma/
+│   │   ├── prisma.module.ts   # Prisma module wrapper
+│   │   └── prisma.service.ts  # Prisma client integration with NestJS lifecycle
+│
+│   └── modules/
+│       └── auth/
+│           ├── auth.module.ts
+│           ├── auth.controller.ts
+│           ├── auth.service.ts
+│           │
+│           ├── dto/
+│           │   └── register.dto.ts   # Request validation schema
+│           │
+│           └── entities/
+│               └── (optional)        # Domain types (if used)
+│
+├── .env                       # Environment variables
+├── docker-compose.yml         # PostgreSQL container config
+├── package.json
+├── tsconfig.json
 └── README.md
 
 
