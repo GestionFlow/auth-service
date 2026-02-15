@@ -1,98 +1,140 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🔐 Auth Service
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+The **Auth Service** is a core backend microservice responsible for **authentication, authorization, and identity management** within Project Mayhem.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This service acts as the **single source of truth for user identity and access control** across the entire platform.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🎯 Purpose
 
-## Project setup
+The Auth Service ensures that:
+- Users can securely register and authenticate
+- Access to backend services is controlled via roles and permissions
+- Other services can reliably verify user identity
 
-```bash
-$ npm install
-```
+This service is intentionally **isolated** to keep security logic centralized and auditable.
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+## 🧠 Responsibilities
 
-# watch mode
-$ npm run start:dev
+### ✅ What This Service Handles
+- User registration and login
+- Secure password management
+- JWT token issuance and validation
+- Role-based access control (RBAC)
+- User identity resolution (`who is the user?`)
 
-# production mode
-$ npm run start:prod
-```
+### ❌ What This Service Does NOT Handle
+- Task or issue data
+- User productivity metrics
+- Messaging or notifications
+- Location tracking
 
-## Run tests
+Other services **must not** store authentication logic or user credentials.
 
-```bash
-# unit tests
-$ npm run test
+---
 
-# e2e tests
-$ npm run test:e2e
+## 🧩 Phase 1 Scope (MVP)
 
-# test coverage
-$ npm run test:cov
-```
+During **Phase 1**, the Auth Service focuses on delivering a **stable and production-ready authentication layer**.
 
-## Deployment
+### Included Features
+- User signup & login
+- JWT-based authentication
+- Predefined roles:
+  - Head
+  - Lead
+  - Volunteer
+- Secure password hashing
+- Basic user identity APIs
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### Out of Scope (Phase 1)
+- OAuth / SSO
+- Refresh tokens
+- Multi-factor authentication
+- Advanced permission policies
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+---
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+## 📡 Public API (Phase 1)
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+| Method | Endpoint           | Description                     |
+|------|--------------------|---------------------------------|
+| POST | `/auth/register`   | Register a new user             |
+| POST | `/auth/login`      | Authenticate user & issue token |
+| GET  | `/auth/me`         | Get authenticated user details |
 
-## Resources
+All endpoints are protected via standard HTTP security practices.
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 🗃️ Data Ownership
 
-## Support
+The Auth Service owns and manages:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- Users
+- Roles
+- User-role mappings
+- Authentication credentials
 
-## Stay in touch
+Each instance operates on its **own dedicated database**.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## 🛠️ Tech Stack
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- **Runtime:** Node.js
+- **Framework:** Express
+- **Database:** PostgreSQL
+- **ORM:** Prisma
+- **Authentication:** JWT
+- **Security:** bcrypt for password hashing
+
+---
+
+## 🔁 Communication With Other Services
+
+- Issues JWTs that are validated by the API Gateway
+- Exposes user identity information to authorized services
+- Does not directly access other service databases
+
+---
+
+## 🧪 Definition of Done (Phase 1)
+
+This service is considered complete for Phase 1 when:
+- Users can successfully register and log in
+- JWTs are correctly issued and validated
+- Roles are assigned and enforced
+- Other services can trust user identity from tokens
+- The service runs independently via Docker
+
+---
+
+## 🧱 Repository Structure
+
+The Auth Service follows a **lean, feature-based repository structure** designed to support incremental development during Phase 1 (MVP), while remaining scalable for future phases.
+
+This structure clearly separates responsibilities, avoids premature abstraction, and keeps authentication logic centralized.
+
+```text
+auth-service/
+├── src/
+│   ├── app.js
+│   ├── server.js
+│   ├── config/
+│   ├── modules/
+│   │   ├── auth/
+│   │   └── users/
+│   ├── middlewares/
+│   ├── utils/
+│   └── routes.js
+├── prisma/
+├── tests/
+├── Dockerfile
+├── .env.example
+└── README.md
+
+
