@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SystemRole {
+  MEMBER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  id        String      @id @default(uuid())
+  name      String
+  email     String      @unique
+  password  String
+  role      SystemRole  @default(MEMBER)
+  status    UserStatus  @default(ACTIVE)
+  createdAt DateTime    @default(now())
+  deletedAt DateTime?
+}
