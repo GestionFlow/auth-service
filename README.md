@@ -6,6 +6,14 @@ This service acts as the **single source of truth for user identity and access c
 
 ---
 
+## Running
+
+To run the project -:
+```bash
+cp .env.example .env
+sudo docker compose up --build -d
+```
+
 ## 🎯 Purpose
 
 The Auth Service ensures that:
